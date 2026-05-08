@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRIV Digital Detox Planer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFFDF7;
+  --blue: #A8D5E2;
+  --navy: #1B2A4A;
+  --text: #1B2A4A;
+  --text2: #4A5568;
+  --card: #FFFFFF;
+  --border: #E2E8F0;
+  --ok: #48BB78;
+  --warn: #ED8936;
+  --err: #F56565;
+  --r-card: 12px;
+  --r-btn: 8px;
+  --shadow: 0 2px 12px rgba(27,42,74,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+h1,h2,h3,.hf{font-family:'Bebas Neue',cursive}
+.phase{display:none;animation:fi .4s ease}
+.phase.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADER */
+.hdr{background:var(--navy);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.hdr-logo{font-family:'Bebas Neue',cursive;font-size:26px;letter-spacing:3px;color:var(--blue)}
+.hdr-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:1px}
+.btn-reset{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.6);padding:6px 12px;border-radius:var(--r-btn);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:.2s;display:none}
+.btn-reset:hover{border-color:var(--err);color:var(--err)}
+.btn-reset.vis{display:block}
+
+/* CONTAINER */
+.wrap{max-width:720px;margin:0 auto;padding:24px 16px}
+
+/* CARD */
+.card{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);padding:22px;margin-bottom:18px}
+.ct{font-family:'Bebas Neue',cursive;font-size:20px;color:var(--navy);margin-bottom:14px;letter-spacing:1px}
+
+/* AUDIT INTRO */
+.a-intro{text-align:center;padding:28px 16px 12px}
+.a-title{font-family:'Bebas Neue',cursive;font-size:34px;color:var(--navy);letter-spacing:2px;margin-bottom:10px;line-height:1.1}
+.a-sub{font-size:14px;color:var(--text2);line-height:1.7}
+
+/* CATEGORY LABEL */
+.cat-lbl{font-family:'Bebas Neue',cursive;font-size:17px;color:var(--navy);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--blue);letter-spacing:1px}
+
+/* APP ROW */
+.app-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.app-icon{width:34px;height:34px;border-radius:8px;background:rgba(168,213,226,.18);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.app-name{flex:1;font-size:13px;font-weight:500;color:var(--text)}
+.app-sgrp{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.app-sl{width:110px;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border);outline:none;cursor:pointer}
+.app-sl::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--navy);cursor:pointer}
+.app-sl::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--navy);cursor:pointer;border:none}
+.app-val{width:38px;text-align:right;font-size:12px;font-weight:600;color:var(--text2)}
+
+/* QUESTIONS */
+.chk-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.chk-item,.rad-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r-btn);cursor:pointer;transition:.2s;font-size:13px;line-height:1.3}
+.chk-item:hover,.rad-item:hover{border-color:var(--blue);background:rgba(168,213,226,.08)}
+.chk-item input,.rad-item input{accent-color:var(--navy);flex-shrink:0}
+.rad-grid{display:flex;flex-direction:column;gap:7px}
+
+/* TOTAL BAR */
+.tot-bar{background:var(--navy);color:#fff;border-radius:var(--r-card);padding:18px 22px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center}
+.tot-lbl{font-size:12px;opacity:.7;margin-bottom:2px}
+.tot-h{font-family:'Bebas Neue',cursive;font-size:40px;color:var(--blue);line-height:1}
+.tot-w{font-size:12px;opacity:.6;margin-top:2px}
+
+/* BUTTONS */
+.btn-primary{width:100%;background:var(--navy);color:#fff;border:none;padding:16px 24px;border-radius:var(--r-btn);font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{background:#263d6b;transform:translateY(-1px);box-shadow:0 4px 16px rgba(27,42,74,.2)}
+.btn-acc{background:var(--blue);color:var(--navy);border:none;padding:10px 20px;border-radius:var(--r-btn);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-acc:hover{background:#8bc4d3}
+.btn-ghost{background:transparent;border:1px solid var(--border);padding:10px 16px;border-radius:var(--r-btn);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;color:var(--text2)}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+
+/* API KEY */
+.api-card{background:rgba(168,213,226,.12);border:1px solid var(--blue);border-radius:var(--r-card);padding:22px;margin-bottom:20px}
+.inp{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r-btn);font-family:'DM Sans',sans-serif;font-size:14px;background:var(--card);color:var(--text);outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--navy)}
+
+/* LOADING */
+.load-wrap{text-align:center;padding:60px 24px}
+.load-title{font-family:'Bebas Neue',cursive;font-size:30px;color:var(--navy);margin-bottom:10px}
+.load-sub{color:var(--text2);font-size:14px;margin-bottom:36px}
+.pulse-row{display:flex;justify-content:center;gap:10px;margin-bottom:32px}
+.pd{width:13px;height:13px;border-radius:50%;background:var(--blue);animation:pu 1.4s ease-in-out infinite}
+.pd:nth-child(2){animation-delay:.2s}.pd:nth-child(3){animation-delay:.4s}
+@keyframes pu{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.steps{display:flex;flex-direction:column;gap:10px;max-width:280px;margin:0 auto}
+.step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);opacity:.35;transition:opacity .4s}
+.step.act{opacity:1;color:var(--text)}
+.step.done{opacity:1;color:var(--ok)}
+.sdot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* ERROR */
+.err-box{background:rgba(245,101,101,.08);border:1px solid var(--err);border-radius:var(--r-card);padding:24px;text-align:center}
+.err-title{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--err);margin-bottom:8px}
+.err-txt{color:var(--text2);font-size:14px;margin-bottom:16px;line-height:1.5}
+.btn-retry{background:var(--err);color:#fff;border:none;padding:12px 24px;border-radius:var(--r-btn);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+
+/* TABS */
+.tab-bar{display:flex;background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);padding:5px;gap:4px;margin-bottom:20px}
+.tab-btn{flex:1;padding:11px 8px;border:none;background:transparent;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:.2s}
+.tab-btn.active{background:var(--navy);color:#fff}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fi .3s ease}
+
+/* PROFILE HERO */
+.prof-hero{background:var(--navy);border-radius:var(--r-card);padding:26px 22px;margin-bottom:18px;color:#fff}
+.prof-lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;opacity:.5;margin-bottom:4px}
+.prof-name{font-family:'Bebas Neue',cursive;font-size:34px;color:var(--blue);letter-spacing:2px;margin-bottom:8px;line-height:1.1}
+.prof-desc{font-size:13px;line-height:1.6;opacity:.83;margin-bottom:6px}
+.prof-sum{font-size:12px;font-style:italic;opacity:.6}
+.score-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;margin-top:18px}
+.score-lbl{font-size:12px;opacity:.75}
+.score-val{font-family:'Bebas Neue',cursive;font-size:26px}
+.score-bg{height:7px;background:rgba(255,255,255,.18);border-radius:4px;overflow:hidden}
+.score-fill{height:100%;border-radius:4px;transition:width 1s ease}
+
+/* ACCORDION */
+.acc-week{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden}
+.acc-hdr{padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.acc-hdr:hover{background:rgba(168,213,226,.07)}
+.wk-title{font-family:'Bebas Neue',cursive;font-size:19px;color:var(--navy);letter-spacing:1px}
+.wk-fok{font-size:12px;color:var(--text2);margin-top:2px}
+.acc-icon{font-size:16px;color:var(--text2);transition:transform .2s;flex-shrink:0}
+.acc-week.open .acc-icon{transform:rotate(180deg)}
+.acc-body{display:none;padding:0 14px 14px}
+.acc-week.open .acc-body{display:block}
+.day-card{display:flex;gap:10px;padding:11px;border-radius:8px;margin-bottom:7px;border:1.5px solid var(--border);position:relative}
+.day-card.comp{border-color:var(--ok);background:rgba(72,187,120,.04)}
+.dn{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--navy);min-width:28px;line-height:1}
+.dn.comp{color:var(--ok)}
+.dc{flex:1}
+.dt{font-size:13px;font-weight:500;margin-bottom:3px;line-height:1.4}
+.dtp{font-size:12px;color:var(--text2);font-style:italic}
+.d-badge{position:absolute;top:8px;right:8px;background:var(--ok);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px}
+
+/* HEUTE TAB */
+.today-hero{background:var(--navy);border-radius:var(--r-card);padding:26px 22px;color:#fff;margin-bottom:18px;text-align:center}
+.td-num{font-family:'Bebas Neue',cursive;font-size:68px;color:var(--blue);line-height:1}
+.td-lbl{font-size:13px;opacity:.65;margin-bottom:18px}
+.td-prog-bg{height:4px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.td-prog-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .5s ease}
+.td-prog-txt{font-size:11px;opacity:.55}
+.heute-task{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);padding:22px;margin-bottom:14px}
+.ht-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:8px}
+.ht-task{font-size:17px;font-weight:500;line-height:1.5;margin-bottom:12px}
+.ht-tip{font-size:13px;color:var(--text2);font-style:italic;padding-left:12px;border-left:3px solid var(--blue);line-height:1.5}
+.mood-card{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);padding:22px;margin-bottom:14px}
+.mood-btns{display:flex;justify-content:space-around;margin-top:12px}
+.mood-btn{font-size:30px;background:none;border:2px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;transition:.2s;line-height:1}
+.mood-btn:hover{transform:scale(1.12);border-color:var(--blue)}
+.mood-btn.sel{border-color:var(--navy);background:rgba(27,42,74,.07);transform:scale(1.12)}
+.note-card{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);padding:22px;margin-bottom:14px}
+.note-ta{width:100%;min-height:90px;padding:11px;border:1.5px solid var(--border);border-radius:var(--r-btn);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);resize:vertical;outline:none;background:var(--bg)}
+.note-ta:focus{border-color:var(--navy)}
+.btn-comp{width:100%;padding:15px;border-radius:var(--r-btn);border:2px solid var(--ok);background:transparent;color:var(--ok);font-family:'Bebas Neue',cursive;font-size:19px;letter-spacing:1px;cursor:pointer;transition:.2s;margin-bottom:24px}
+.btn-comp:hover,.btn-comp.done{background:var(--ok);color:#fff}
+
+/* STATS */
+.stat-card{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);padding:22px;margin-bottom:14px}
+.stat-title{font-family:'Bebas Neue',cursive;font-size:18px;color:var(--navy);margin-bottom:14px;letter-spacing:1px}
+.streak-wrap{text-align:center;padding:12px}
+.streak-n{font-family:'Bebas Neue',cursive;font-size:68px;color:var(--warn);line-height:1}
+.streak-l{font-size:13px;color:var(--text2);margin-top:4px}
+.mood-trend{display:flex;gap:6px;flex-wrap:wrap}
+.mood-day-item{display:flex;flex-direction:column;align-items:center;gap:2px}
+.mood-em{font-size:18px}
+.mood-dn{font-size:10px;color:var(--text2)}
+.sav-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sav-item{text-align:center;padding:14px;background:var(--bg);border-radius:var(--r-btn)}
+.sav-val{font-family:'Bebas Neue',cursive;font-size:30px;color:var(--navy)}
+.sav-lbl{font-size:11px;color:var(--text2);margin-top:2px}
+.motiv-card{background:var(--navy);border-radius:var(--r-card);padding:26px 22px;text-align:center;color:#fff;margin-bottom:14px}
+.motiv-q{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:1px;line-height:1.4;color:var(--blue)}
+
+/* HABITS & WARNINGS */
+.habits-list{list-style:none}
+.habit-item{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.4}
+.habit-item:last-child{border-bottom:none}
+.habit-ic{color:var(--ok);flex-shrink:0;margin-top:1px}
+.warn-box{background:rgba(237,137,54,.08);border:1px solid var(--warn);border-radius:var(--r-card);padding:18px;margin-bottom:16px}
+.warn-title{font-family:'Bebas Neue',cursive;font-size:17px;color:var(--warn);margin-bottom:10px;letter-spacing:1px}
+.warn-list{list-style:none}
+.warn-item{display:flex;gap:8px;font-size:13px;margin-bottom:7px;align-items:flex-start;line-height:1.4}
+.warn-bul{color:var(--warn);flex-shrink:0}
+
+/* MOBILE */
+@media(max-width:480px){
+  .chk-grid{grid-template-columns:1fr}
+  .app-sl{width:85px}
+  .sav-grid{grid-template-columns:1fr}
+  .td-num{font-size:52px}
+  .a-title{font-size:26px}
+  .tab-btn{font-size:12px;padding:10px 4px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div>
+    <div class="hdr-logo">DRIV</div>
+    <div class="hdr-sub">Digital Detox Planer</div>
+  </div>
+  <button class="btn-reset" id="btn-reset" onclick="confirmReset()">↺ Neu starten</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PHASE 1 — AUDIT
+════════════════════════════════════════════════ -->
+<div class="phase active" id="ph-audit">
+  <div class="wrap">
+    <div class="a-intro">
+      <div class="a-title">Wie viel Zeit verbringst du am Bildschirm?</div>
+      <div class="a-sub">Trage deine durchschnittliche tägliche Nutzung ein. Sei ehrlich — nur du siehst diese Daten. Die KI erstellt danach deinen persönlichen 30-Tage-Plan.</div>
+    </div>
+
+    <div class="card">
+      <div class="cat-lbl">📱 Social Media</div>
+      <div id="cat-social"></div>
+    </div>
+    <div class="card">
+      <div class="cat-lbl">🎬 Entertainment &amp; Streaming</div>
+      <div id="cat-ent"></div>
+    </div>
+    <div class="card">
+      <div class="cat-lbl">💬 Kommunikation</div>
+      <div id="cat-comm"></div>
+    </div>
+    <div class="card">
+      <div class="cat-lbl">🎮 Sonstiges</div>
+      <div id="cat-other"></div>
+    </div>
+
+    <div class="tot-bar">
+      <div>
+        <div class="tot-lbl">Tägliche Gesamtnutzung</div>
+        <div class="tot-h" id="tot-h">0.0 h</div>
+        <div class="tot-w" id="tot-w">= 0.0 Stunden pro Woche</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;opacity:.55">Wöchentlich</div>
+        <div style="font-family:'Bebas Neue',cursive;font-size:30px;color:var(--blue)" id="tot-wn">0</div>
+        <div style="font-size:11px;opacity:.45">Stunden</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Wann greifst du am häufigsten zum Handy?</div>
+      <div class="chk-grid" id="triggers-grid"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Was ist dein Hauptziel?</div>
+      <div class="rad-grid" id="goals-grid"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Wie würdest du deine aktuelle Situation einschätzen?</div>
+      <div class="rad-grid" id="assess-grid"></div>
+    </div>
+
+    <button class="btn-primary" onclick="startGeneration()">Meinen persönlichen Plan erstellen →</button>
+    <div style="height:32px"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PHASE 2 — LOADING / API
+════════════════════════════════════════════════ -->
+<div class="phase" id="ph-load">
+  <div class="wrap">
+    <!-- NAME INPUT (für Kunden) -->
+    <div class="api-card" id="api-section">
+      <div class="ct" style="font-size:17px;margin-bottom:4px">👋 Fast geschafft!</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">Wie sollen wir dich nennen? Dein Name erscheint in deinem persönlichen Plan.</p>
+      <input class="inp" type="text" id="name-inp" placeholder="Dein Name…" maxlength="40">
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-acc" onclick="submitName()">Plan erstellen →</button>
+        <button class="btn-ghost" onclick="showPhase('ph-audit')">← Zurück</button>
+      </div>
+    </div>
+
+    <!-- LOADING ANIMATION -->
+    <div class="load-wrap" id="load-anim" style="display:none">
+      <div class="load-title">KI erstellt deinen Plan…</div>
+      <div class="load-sub">Dein persönlicher 30-Tage Detox-Plan wird generiert</div>
+      <div class="pulse-row">
+        <div class="pd"></div><div class="pd"></div><div class="pd"></div>
+      </div>
+      <div class="steps">
+        <div class="step" id="s1"><div class="sdot"></div> Audit wird analysiert…</div>
+        <div class="step" id="s2"><div class="sdot"></div> Nutzerprofil wird erstellt…</div>
+        <div class="step" id="s3"><div class="sdot"></div> 30-Tage-Plan wird generiert…</div>
+        <div class="step" id="s4"><div class="sdot"></div> Empfehlungen werden personalisiert…</div>
+      </div>
+    </div>
+
+    <!-- ERROR -->
+    <div id="err-section" style="display:none">
+      <div class="err-box">
+        <div class="err-title">Fehler beim Erstellen des Plans</div>
+        <div class="err-txt" id="err-msg">Ein unbekannter Fehler ist aufgetreten.</div>
+        <button class="btn-retry" onclick="retry()">Erneut versuchen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PHASE 3 — DASHBOARD
+════════════════════════════════════════════════ -->
+<div class="phase" id="ph-dash">
+  <div class="wrap">
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('plan',this)">📋 Plan</button>
+      <button class="tab-btn" onclick="switchTab('heute',this)">☀️ Heute</button>
+      <button class="tab-btn" onclick="switchTab('stats',this)">📊 Statistiken</button>
+    </div>
+
+    <!-- TAB: PLAN -->
+    <div class="tab-content active" id="tab-plan">
+      <div class="prof-hero" id="prof-hero"></div>
+      <div id="ersatz-wrap"></div>
+      <div id="warn-wrap"></div>
+      <div id="weeks-wrap"></div>
+    </div>
+
+    <!-- TAB: HEUTE -->
+    <div class="tab-content" id="tab-heute">
+      <div class="today-hero">
+        <div class="td-num" id="td-num">1</div>
+        <div class="td-lbl" id="td-lbl">Tag 1 von 30</div>
+        <div class="td-prog-bg"><div class="td-prog-fill" id="td-prog" style="width:0%"></div></div>
+        <div class="td-prog-txt" id="td-prog-txt">0% abgeschlossen</div>
+      </div>
+      <div class="heute-task">
+        <div class="ht-lbl">Heutige Aufgabe</div>
+        <div class="ht-task" id="ht-task">—</div>
+        <div class="ht-tip" id="ht-tip">—</div>
+      </div>
+      <div class="mood-card">
+        <div class="ct" style="font-size:15px;margin-bottom:2px">Wie fühlst du dich heute?</div>
+        <div class="mood-btns">
+          <button class="mood-btn" data-m="1" onclick="setMood(1)">😫</button>
+          <button class="mood-btn" data-m="2" onclick="setMood(2)">😕</button>
+          <button class="mood-btn" data-m="3" onclick="setMood(3)">😐</button>
+          <button class="mood-btn" data-m="4" onclick="setMood(4)">🙂</button>
+          <button class="mood-btn" data-m="5" onclick="setMood(5)">😊</button>
+        </div>
+      </div>
+      <div class="note-card">
+        <div class="ct" style="font-size:15px;margin-bottom:10px">Tagesnotiz</div>
+        <textarea class="note-ta" id="note-ta" placeholder="Wie war dein Tag? Was hat geklappt, was nicht?"></textarea>
+        <button class="btn-acc" style="margin-top:10px" id="btn-save-note" onclick="saveNote()">Notiz speichern</button>
+      </div>
+      <button class="btn-comp" id="btn-comp" onclick="toggleDone()">✓ Aufgabe als erledigt markieren</button>
+    </div>
+
+    <!-- TAB: STATISTIKEN -->
+    <div class="tab-content" id="tab-stats">
+      <div class="stat-card">
+        <div class="stat-title">🔥 Streak</div>
+        <div class="streak-wrap">
+          <div class="streak-n" id="streak-n">0</div>
+          <div class="streak-l">Tage in Folge abgeschlossen</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">📅 Wöchentliche Abschlussrate</div>
+        <div id="weekly-chart"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">😊 Stimmungsverlauf</div>
+        <div class="mood-trend" id="mood-trend"></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:8px">Nur Tage mit Eintrag werden angezeigt</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">⏱️ Gesparte Bildschirmzeit</div>
+        <div class="sav-grid" id="sav-grid"></div>
+      </div>
+      <div class="motiv-card">
+        <div style="font-size:11px;opacity:.5;margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">Dein Motivationsspruch</div>
+        <div class="motiv-q" id="motiv-q">—</div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────
+const APPS = [
+  // [id, name, emoji, category]
+  ['instagram','Instagram','📸','social'],
+  ['tiktok','TikTok','🎵','social'],
+  ['snapchat','Snapchat','👻','social'],
+  ['twitter','X (Twitter)','𝕏','social'],
+  ['reddit','Reddit','🤖','social'],
+  ['facebook','Facebook','👥','social'],
+  ['pinterest','Pinterest','📌','social'],
+  ['linkedin','LinkedIn','💼','social'],
+  ['bereal','BeReal','📷','social'],
+  ['ytshorts','YouTube Shorts','▶️','social'],
+  ['youtube','YouTube','📺','ent'],
+  ['netflix','Netflix / Streaming','🎬','ent'],
+  ['twitch','Twitch','🕹','ent'],
+  ['whatsapp','WhatsApp','💬','comm'],
+  ['telegram','Telegram','✈️','comm'],
+  ['discord','Discord','🎙️','comm'],
+  ['gaming','Online-Gaming','🎮','other'],
+  ['news','News-Apps / Doom-Scrolling','📰','other'],
+  ['sonstiges','Sonstiges','📱','other'],
+];
+
+const CAT_NAMES = {social:'Social Media',ent:'Entertainment & Streaming',comm:'Kommunikation',other:'Sonstiges'};
+
+const TRIGGERS = [
+  'Direkt nach dem Aufwachen',
+  'Während Mahlzeiten',
+  'Bei Langeweile / Wartezeiten',
+  'Abends vor dem Schlafen',
+  'Während der Arbeit / Schule',
+  'Beim Sport / Spaziergang',
+];
+
+const GOALS = [
+  'Weniger Stress & mentale Erschöpfung',
+  'Besser schlafen',
+  'Mehr Fokus & Produktivität',
+  'Mehr Zeit für echte Beziehungen',
+  'Allgemeines Wohlbefinden verbessern',
+];
+
+const ASSESSMENTS = [
+  'Ich merke kaum Probleme, will aber bewusster werden',
+  'Ich greife oft unbewusst zum Handy',
+  'Das Handy stört meinen Alltag spürbar',
+  'Ich fühle mich abhängig und möchte das ernsthaft ändern',
+];
+
+const ASSESS_PTS = [20,40,70,100];
+const MOODS = ['','😫','😕','😐','🙂','😊'];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let vals = {};       // {appId: number}
+let auditData = {};  // collected form data
+let plan = null;     // parsed AI JSON
+let checkins = {};
+let startDate = null;
+let customerName = '';
+let curDay = 1;
+let stepTimer = null;
+
+// ─────────────────────────────────────────────
+// STORAGE
+// ─────────────────────────────────────────────
+function save() {
+  try {
+    localStorage.setItem('driv_audit', JSON.stringify(auditData));
+    if (plan) localStorage.setItem('driv_plan', JSON.stringify(plan));
+    localStorage.setItem('driv_ci', JSON.stringify(checkins));
+    if (startDate) localStorage.setItem('driv_start', startDate.toISOString());
+    if (customerName) localStorage.setItem('driv_name', customerName);
+  } catch(e){}
+}
+
+function load() {
+  try {
+    const a = localStorage.getItem('driv_audit'); if(a) auditData = JSON.parse(a);
+    const p = localStorage.getItem('driv_plan');  if(p) plan = JSON.parse(p);
+    const c = localStorage.getItem('driv_ci');    if(c) checkins = JSON.parse(c);
+    const s = localStorage.getItem('driv_start'); if(s) startDate = new Date(s);
+    const k = localStorage.getItem('driv_name'); if(k) customerName = k;
+    APPS.forEach(([id]) => { vals[id] = auditData[id] || 0; });
+  } catch(e){}
+}
+
+function confirmReset() {
+  if(confirm('Wirklich neu starten? Alle gespeicherten Daten werden gelöscht.')) {
+    localStorage.clear(); location.reload();
+  }
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function init() {
+  APPS.forEach(([id]) => { vals[id] = 0; });
+  load();
+  renderAudit();
+  if(plan && startDate) {
+    document.getElementById('btn-reset').classList.add('vis');
+    showPhase('ph-dash');
+    renderDash();
+  }
+}
+
+
+// ─────────────────────────────────────────────
+// PHASE NAV
+// ─────────────────────────────────────────────
+function showPhase(id) {
+  document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  if(id==='heute') renderHeuteTab();
+  if(id==='stats') renderStats();
+}
+
+// ─────────────────────────────────────────────
+// RENDER AUDIT
+// ─────────────────────────────────────────────
+function renderAudit() {
+  const cats = {social:'cat-social',ent:'cat-ent',comm:'cat-comm',other:'cat-other'};
+  APPS.forEach(([id,name,icon,cat]) => {
+    const v = vals[id];
+    const row = document.createElement('div');
+    row.className = 'app-row';
+    row.innerHTML = `
+      <div class="app-icon">${icon}</div>
+      <div class="app-name">${name}</div>
+      <div class="app-sgrp">
+        <input type="range" class="app-sl" id="sl-${id}" min="0" max="16" step="0.5" value="${v}" oninput="upVal('${id}',this.value)">
+        <div class="app-val" id="av-${id}">${v.toFixed(1)}h</div>
+      </div>`;
+    document.getElementById(cats[cat]).appendChild(row);
+  });
+
+  // Triggers
+  const tg = document.getElementById('triggers-grid');
+  TRIGGERS.forEach(t => {
+    const chk = (auditData.triggers||[]).includes(t);
+    const lbl = document.createElement('label');
+    lbl.className = 'chk-item';
+    lbl.innerHTML = `<input type="checkbox" name="trig" value="${t}" ${chk?'checked':''} onchange="updateTotal()"> ${t}`;
+    tg.appendChild(lbl);
+  });
+
+  // Goals
+  const gg = document.getElementById('goals-grid');
+  GOALS.forEach(g => {
+    const sel = auditData.goal === g;
+    const lbl = document.createElement('label');
+    lbl.className = 'rad-item';
+    lbl.innerHTML = `<input type="radio" name="goal" value="${g}" ${sel?'checked':''} onchange="updateTotal()"> ${g}`;
+    gg.appendChild(lbl);
+  });
+
+  // Assessments
+  const ag = document.getElementById('assess-grid');
+  ASSESSMENTS.forEach((a,i) => {
+    const sel = auditData.assessment === a;
+    const lbl = document.createElement('label');
+    lbl.className = 'rad-item';
+    lbl.innerHTML = `<input type="radio" name="assess" value="${a}" data-idx="${i}" ${sel?'checked':''} onchange="updateTotal()"> ${a}`;
+    ag.appendChild(lbl);
+  });
+
+  updateTotal();
+}
+
+function upVal(id, v) {
+  vals[id] = parseFloat(v);
+  const el = document.getElementById('av-'+id);
+  if(el) el.textContent = parseFloat(v).toFixed(1)+'h';
+  updateTotal();
+}
+
+function updateTotal() {
+  const tot = APPS.reduce((s,[id]) => s + (vals[id]||0), 0);
+  document.getElementById('tot-h').textContent = tot.toFixed(1)+' h';
+  document.getElementById('tot-w').textContent = '= '+(tot*7).toFixed(1)+' Stunden pro Woche';
+  document.getElementById('tot-wn').textContent = (tot*7).toFixed(0);
+}
+
+// ─────────────────────────────────────────────
+// COLLECT & SCORE
+// ─────────────────────────────────────────────
+function collectAudit() {
+  const d = {};
+  APPS.forEach(([id]) => { d[id] = vals[id]||0; });
+  d.triggers = [];
+  document.querySelectorAll('input[name="trig"]:checked').forEach(cb => d.triggers.push(cb.value));
+  const g = document.querySelector('input[name="goal"]:checked');
+  d.goal = g ? g.value : GOALS[0];
+  const as = document.querySelector('input[name="assess"]:checked');
+  d.assessment = as ? as.value : ASSESSMENTS[0];
+  d.assessIdx = as ? parseInt(as.dataset.idx) : 0;
+  return d;
+}
+
+function calcScores(d) {
+  const total = APPS.reduce((s,[id]) => s+(d[id]||0), 0);
+  const weekly = total * 7;
+
+  const usage = APPS.map(([id,name,,cat]) => ({id,name,cat,h:d[id]||0})).sort((a,b)=>b.h-a.h);
+  const top3 = usage.slice(0,3);
+
+  const catTot = {};
+  APPS.forEach(([id,,,cat]) => { catTot[cat]=(catTot[cat]||0)+(d[id]||0); });
+  const domCat = Object.entries(catTot).sort((a,b)=>b[1]-a[1])[0][0];
+
+  let score = ASSESS_PTS[d.assessIdx]||20;
+  score += (d.triggers||[]).length * 5;
+  if(total>=8) score+=35; else if(total>=5) score+=20; else if(total>=3) score+=10;
+  score = Math.min(100, Math.round(score));
+
+  return {total,weekly,top3,domCat:CAT_NAMES[domCat]||domCat,score};
+}
+
+// ─────────────────────────────────────────────
+// GENERATION FLOW
+// ─────────────────────────────────────────────
+function startGeneration() {
+  auditData = collectAudit();
+  save();
+  // reset ph-load state every time
+  document.getElementById('api-section').style.display = 'block';
+  document.getElementById('load-anim').style.display = 'none';
+  document.getElementById('err-section').style.display = 'none';
+  showPhase('ph-load');
+  // if name already known, skip name input and generate immediately
+  if(customerName) {
+    document.getElementById('api-section').style.display = 'none';
+    document.getElementById('load-anim').style.display = 'block';
+    generate();
+  }
+}
+
+function submitName() {
+  const v = document.getElementById('name-inp').value.trim();
+  if(!v) { alert('Bitte gib deinen Namen ein.'); return; }
+  customerName = v;
+  localStorage.setItem('driv_name', customerName);
+  document.getElementById('api-section').style.display='none';
+  document.getElementById('load-anim').style.display='block';
+  generate();
+}
+
+function animSteps() {
+  clearInterval(stepTimer);
+  ['s1','s2','s3','s4'].forEach(id => {
+    const el = document.getElementById(id);
+    el.className = 'step';
+  });
+  let i = 0;
+  const ids = ['s1','s2','s3','s4'];
+  stepTimer = setInterval(() => {
+    if(i>0) { const prev=document.getElementById(ids[i-1]); if(prev){prev.classList.remove('act');prev.classList.add('done');} }
+    if(i<ids.length) { const el=document.getElementById(ids[i]); if(el) el.classList.add('act'); i++; }
+    else clearInterval(stepTimer);
+  }, 1300);
+}
+
+async function generate() {
+  animSteps();
+  const sc = calcScores(auditData);
+  const {total,weekly,top3,domCat,score} = sc;
+  const t3 = top3.map(a=>a.name);
+  const trig = (auditData.triggers||[]).join(', ')||'Keine angegeben';
+
+  const prompt = `Erstelle einen personalisierten 30-Tage Digital-Detox-Plan für folgenden Nutzer:
+
+Bildschirmzeit täglich: ${total.toFixed(1)} Stunden
+Top-Apps: ${t3[0]||'N/A'}, ${t3[1]||'N/A'}, ${t3[2]||'N/A'}
+Dominante Kategorie: ${domCat}
+Sucht-Score: ${score}/100
+Haupttrigger: ${trig}
+Hauptziel: ${auditData.goal||GOALS[0]}
+Selbsteinschätzung: ${auditData.assessment||ASSESSMENTS[0]}
+
+Erstelle einen strukturierten Plan im folgenden JSON-Format (NUR reines JSON, keine Backticks, keine Erklärungen):
+{
+  "profilName": "Kurzer Profilname max 4 Wörter",
+  "profilBeschreibung": "2-3 Sätze zur Hauptproblematik",
+  "gesamtbewertung": "1 Satz zur Gesamtsituation",
+  "wochen": [
+    {
+      "woche": 1,
+      "titel": "Wochentitel",
+      "fokus": "1 Satz Wochenfokus",
+      "tage": [
+        {"tag": 1, "aufgabe": "Konkrete Tagesaufgabe max 2 Sätze", "tipp": "Kurzer Tipp 1 Satz"},
+        {"tag": 2, "aufgabe": "...", "tipp": "..."},
+        {"tag": 3, "aufgabe": "...", "tipp": "..."},
+        {"tag": 4, "aufgabe": "...", "tipp": "..."},
+        {"tag": 5, "aufgabe": "...", "tipp": "..."},
+        {"tag": 6, "aufgabe": "...", "tipp": "..."},
+        {"tag": 7, "aufgabe": "...", "tipp": "..."}
+      ]
+    },
+    {
+      "woche": 2,
+      "titel": "...",
+      "fokus": "...",
+      "tage": [
+        {"tag": 8, "aufgabe": "...", "tipp": "..."},
+        {"tag": 9, "aufgabe": "...", "tipp": "..."},
+        {"tag": 10, "aufgabe": "...", "tipp": "..."},
+        {"tag": 11, "aufgabe": "...", "tipp": "..."},
+        {"tag": 12, "aufgabe": "...", "tipp": "..."},
+        {"tag": 13, "aufgabe": "...", "tipp": "..."},
+        {"tag": 14, "aufgabe": "...", "tipp": "..."}
+      ]
+    },
+    {
+      "woche": 3,
+      "titel": "...",
+      "fokus": "...",
+      "tage": [
+        {"tag": 15, "aufgabe": "...", "tipp": "..."},
+        {"tag": 16, "aufgabe": "...", "tipp": "..."},
+        {"tag": 17, "aufgabe": "...", "tipp": "..."},
+        {"tag": 18, "aufgabe": "...", "tipp": "..."},
+        {"tag": 19, "aufgabe": "...", "tipp": "..."},
+        {"tag": 20, "aufgabe": "...", "tipp": "..."},
+        {"tag": 21, "aufgabe": "...", "tipp": "..."}
+      ]
+    },
+    {
+      "woche": 4,
+      "titel": "...",
+      "fokus": "...",
+      "tage": [
+        {"tag": 22, "aufgabe": "...", "tipp": "..."},
+        {"tag": 23, "aufgabe": "...", "tipp": "..."},
+        {"tag": 24, "aufgabe": "...", "tipp": "..."},
+        {"tag": 25, "aufgabe": "...", "tipp": "..."},
+        {"tag": 26, "aufgabe": "...", "tipp": "..."},
+        {"tag": 27, "aufgabe": "...", "tipp": "..."},
+        {"tag": 28, "aufgabe": "...", "tipp": "..."},
+        {"tag": 29, "aufgabe": "...", "tipp": "..."},
+        {"tag": 30, "aufgabe": "...", "tipp": "..."}
+      ]
+    }
+  ],
+  "ersatzgewohnheiten": [
+    "Analoge Alternative zu ${t3[0]||'Social Media'}",
+    "Analoge Alternative zu ${t3[1]||'Entertainment'}",
+    "Analoge Alternative zu ${t3[2]||'Kommunikation'}",
+    "Allgemeine Ersatzgewohnheit 4",
+    "Allgemeine Ersatzgewohnheit 5"
+  ],
+  "warnzeichen": [
+    "Rückfall-Warnzeichen 1 basierend auf Triggern",
+    "Rückfall-Warnzeichen 2",
+    "Rückfall-Warnzeichen 3"
+  ],
+  "motivationsspruch": "Kraftvoller kurzer Motivationsspruch auf Deutsch"
+}`;
+
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 8000,
+        system: 'Du bist ein Experte für digitales Wohlbefinden und Verhaltenspsychologie. Du erstellst präzise, umsetzbare und personalisierte 30-Tage Digital-Detox-Pläne auf Deutsch. Deine Pläne sind realistisch, motivierend und wissenschaftlich fundiert. Antworte ausschließlich im angegebenen JSON-Format ohne Markdown-Backticks oder Präambel.',
+        messages: [{role:'user', content: prompt}],
+      }),
+    });
+
+    if(!resp.ok) {
+      const ed = await resp.json().catch(()=>({}));
+      throw new Error(ed.error?.message||`HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    let raw = data.content[0].text.trim();
+    raw = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```\s*$/,'').trim();
+
+    plan = JSON.parse(raw);
+    plan._sc = sc;
+    startDate = new Date();
+    save();
+
+    clearInterval(stepTimer);
+    ['s1','s2','s3','s4'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.className='step done';}
+    });
+
+    setTimeout(()=>{
+      document.getElementById('btn-reset').classList.add('vis');
+      showPhase('ph-dash');
+      renderDash();
+    }, 700);
+
+  } catch(e) {
+    clearInterval(stepTimer);
+    document.getElementById('load-anim').style.display='none';
+    document.getElementById('err-section').style.display='block';
+    document.getElementById('err-msg').textContent = 'Fehler: '+e.message+'. Bitte versuche es erneut.';
+  }
+}
+
+function retry() {
+  document.getElementById('err-section').style.display='none';
+  document.getElementById('load-anim').style.display='block';
+  generate();
+}
+
+// ─────────────────────────────────────────────
+// DASHBOARD RENDER
+// ─────────────────────────────────────────────
+function renderDash() {
+  renderPlanTab();
+  renderHeuteTab();
+}
+
+function renderPlanTab() {
+  if(!plan) return;
+  const sc = plan._sc||{};
+  const score = sc.score||0;
+  const scoreCol = score>60?'var(--err)':score>30?'var(--warn)':'var(--ok)';
+
+  document.getElementById('prof-hero').innerHTML = `
+    <div class="prof-lbl">Dein Profil</div>
+    <div class="prof-name">${plan.profilName||'Dein Profil'}</div>
+    <div class="prof-desc">${plan.profilBeschreibung||''}</div>
+    <div class="prof-sum">${plan.gesamtbewertung||''}</div>
+    <div class="score-row">
+      <span class="score-lbl">Abhängigkeits-Score</span>
+      <span class="score-val" style="color:${scoreCol}">${score}/100</span>
+    </div>
+    <div class="score-bg"><div class="score-fill" style="width:${score}%;background:${scoreCol}"></div></div>`;
+
+  const ers = plan.ersatzgewohnheiten||[];
+  document.getElementById('ersatz-wrap').innerHTML = ers.length ? `
+    <div class="card">
+      <div class="ct">✅ Ersatzgewohnheiten</div>
+      <ul class="habits-list">${ers.map(h=>`<li class="habit-item"><span class="habit-ic">✓</span>${h}</li>`).join('')}</ul>
+    </div>` : '';
+
+  const wz = plan.warnzeichen||[];
+  document.getElementById('warn-wrap').innerHTML = wz.length ? `
+    <div class="warn-box">
+      <div class="warn-title">⚠️ Rückfall-Warnzeichen</div>
+      <ul class="warn-list">${wz.map(w=>`<li class="warn-item"><span class="warn-bul">▶</span>${w}</li>`).join('')}</ul>
+    </div>` : '';
+
+  const wc = document.getElementById('weeks-wrap');
+  wc.innerHTML = '';
+  (plan.wochen||[]).forEach((wk,wi) => {
+    const done = (wk.tage||[]).filter(t=>checkins[t.tag]?.done).length;
+    const tot = (wk.tage||[]).length;
+    const div = document.createElement('div');
+    div.className = 'acc-week'+(wi===0?' open':'');
+    div.innerHTML = `
+      <div class="acc-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div>
+          <div class="wk-title">Woche ${wk.woche}: ${wk.titel||''}</div>
+          <div class="wk-fok">${wk.fokus||''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:var(--text2)">${done}/${tot}</span>
+          <span class="acc-icon">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        ${(wk.tage||[]).map(tag=>{
+          const ci=checkins[tag.tag]||{};
+          const d=!!ci.done;
+          return `<div class="day-card ${d?'comp':''}">
+            <div class="dn ${d?'comp':''}">${tag.tag}</div>
+            <div class="dc">
+              <div class="dt">${tag.aufgabe||''}</div>
+              <div class="dtp">${tag.tipp||''}</div>
+            </div>
+            ${d?'<div class="d-badge">✓</div>':''}
+          </div>`;
+        }).join('')}
+      </div>`;
+    wc.appendChild(div);
+  });
+}
+
+function calcCurDay() {
+  if(!startDate) return 1;
+  const diff = Math.floor((Date.now()-new Date(startDate).getTime())/(1000*60*60*24));
+  return Math.min(Math.max(diff+1,1),30);
+}
+
+function renderHeuteTab() {
+  if(!plan) return;
+  curDay = calcCurDay();
+  document.getElementById('td-num').textContent = curDay;
+  document.getElementById('td-lbl').textContent = `Tag ${curDay} von 30`;
+
+  const done = Object.values(checkins).filter(c=>c.done).length;
+  const pct = Math.round((done/30)*100);
+  document.getElementById('td-prog').style.width = pct+'%';
+  document.getElementById('td-prog-txt').textContent = pct+'% abgeschlossen';
+
+  let task = null;
+  for(const wk of plan.wochen||[]) {
+    for(const t of wk.tage||[]) {
+      if(t.tag===curDay){task=t;break;}
+    }
+    if(task) break;
+  }
+  document.getElementById('ht-task').textContent = task?.aufgabe||'—';
+  document.getElementById('ht-tip').textContent = task?.tipp||'—';
+
+  const ci = checkins[curDay]||{};
+  document.querySelectorAll('.mood-btn').forEach(b=>{
+    b.classList.remove('sel');
+    if(parseInt(b.dataset.m)===ci.mood) b.classList.add('sel');
+  });
+  document.getElementById('note-ta').value = ci.note||'';
+  const bc = document.getElementById('btn-comp');
+  if(ci.done){bc.classList.add('done');bc.textContent='✓ Heute erledigt!';}
+  else{bc.classList.remove('done');bc.textContent='✓ Aufgabe als erledigt markieren';}
+}
+
+function setMood(m) {
+  if(!checkins[curDay]) checkins[curDay]={};
+  checkins[curDay].mood = m;
+  save();
+  document.querySelectorAll('.mood-btn').forEach(b=>{
+    b.classList.remove('sel');
+    if(parseInt(b.dataset.m)===m) b.classList.add('sel');
+  });
+}
+
+function saveNote() {
+  if(!checkins[curDay]) checkins[curDay]={};
+  checkins[curDay].note = document.getElementById('note-ta').value;
+  save();
+  const btn = document.getElementById('btn-save-note');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Gespeichert';
+  btn.style.background='var(--ok)';
+  setTimeout(()=>{btn.textContent=orig;btn.style.background='';},1600);
+}
+
+function toggleDone() {
+  if(!checkins[curDay]) checkins[curDay]={};
+  checkins[curDay].done = !checkins[curDay].done;
+  save();
+  const bc = document.getElementById('btn-comp');
+  if(checkins[curDay].done){bc.classList.add('done');bc.textContent='✓ Heute erledigt!';}
+  else{bc.classList.remove('done');bc.textContent='✓ Aufgabe als erledigt markieren';}
+  renderPlanTab();
+}
+
+function renderStats() {
+  if(!plan) return;
+  // Streak
+  let streak=0;
+  for(let d=calcCurDay();d>=1;d--){
+    if(checkins[d]?.done) streak++; else break;
+  }
+  document.getElementById('streak-n').textContent = streak;
+
+  // Weekly chart
+  const wdata = [0,0,0,0];
+  const wtot = [7,7,7,9];
+  Object.entries(checkins).forEach(([d,ci])=>{
+    if(ci.done){
+      const n=parseInt(d);
+      if(n<=7)wdata[0]++; else if(n<=14)wdata[1]++; else if(n<=21)wdata[2]++; else wdata[3]++;
+    }
+  });
+  const ch = document.getElementById('weekly-chart');
+  ch.innerHTML = `
+    <div style="display:flex;gap:10px;height:120px;align-items:flex-end;margin-bottom:8px">
+      ${wdata.map((v,i)=>{
+        const pct=wtot[i]>0?v/wtot[i]:0;
+        const h=Math.max(4,Math.round(pct*100));
+        const col = pct>=0.8?'var(--ok)':pct>=0.5?'var(--warn)':'var(--blue)';
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end">
+          <div style="font-size:11px;font-weight:600;color:var(--text2)">${v}/${wtot[i]}</div>
+          <div style="width:100%;height:${h}px;background:${col};border-radius:4px 4px 0 0"></div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="display:flex;gap:10px">
+      ${['Woche 1','Woche 2','Woche 3','Woche 4'].map(w=>`<div style="flex:1;text-align:center;font-size:11px;color:var(--text2)">${w}</div>`).join('')}
+    </div>`;
+
+  // Mood trend
+  const mt = document.getElementById('mood-trend');
+  mt.innerHTML = '';
+  for(let d=1;d<=30;d++){
+    const ci=checkins[d];
+    if(ci&&ci.mood){
+      const el=document.createElement('div');
+      el.className='mood-day-item';
+      el.innerHTML=`<div class="mood-em">${MOODS[ci.mood]}</div><div class="mood-dn">${d}</div>`;
+      mt.appendChild(el);
+    }
+  }
+  if(!mt.children.length) mt.innerHTML='<div style="font-size:13px;color:var(--text2)">Noch keine Stimmungsdaten vorhanden.</div>';
+
+  // Savings
+  const sc = plan._sc||{};
+  const origD = sc.total||0;
+  const cd = calcCurDay();
+  const redF = (cd/30)*0.5;
+  const savedD = origD*redF;
+  const savedT = savedD*cd;
+  document.getElementById('sav-grid').innerHTML = `
+    <div class="sav-item"><div class="sav-val">${savedD.toFixed(1)}h</div><div class="sav-lbl">Täglich gespart</div></div>
+    <div class="sav-item"><div class="sav-val">${savedT.toFixed(0)}h</div><div class="sav-lbl">Insgesamt gespart</div></div>
+    <div class="sav-item"><div class="sav-val">${origD.toFixed(1)}h</div><div class="sav-lbl">Ursprüngliche Nutzung/Tag</div></div>
+    <div class="sav-item"><div class="sav-val">${cd}/30</div><div class="sav-lbl">Tage im Plan</div></div>`;
+
+  document.getElementById('motiv-q').textContent = plan.motivationsspruch||'—';
+}
+
+// ─────────────────────────────────────────────
+// START
+// ─────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
