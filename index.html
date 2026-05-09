@@ -144,6 +144,15 @@ h1,h2,h3,.hf{font-family:'Bebas Neue',cursive}
 .dt{font-size:13px;font-weight:500;margin-bottom:3px;line-height:1.4}
 .dtp{font-size:12px;color:var(--text2);font-style:italic}
 .d-badge{position:absolute;top:8px;right:8px;background:var(--ok);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px}
+.task-list{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:9px 11px;border-radius:7px;background:rgba(168,213,226,.08);cursor:pointer;transition:background .15s, transform .1s;user-select:none}
+.task-row:hover{background:rgba(168,213,226,.18)}
+.task-row:active{transform:scale(.98)}
+.task-row.done{background:rgba(72,187,120,.10)}
+.task-row.done .task-text{text-decoration:line-through;color:var(--text2)}
+.task-cb{flex-shrink:0;width:19px;height:19px;border:2px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;color:#fff;background:#fff;margin-top:1px;transition:all .15s}
+.task-row.done .task-cb{background:var(--ok);border-color:var(--ok)}
+.task-text{font-size:13px;line-height:1.45;flex:1}
 
 /* HEUTE TAB */
 .today-hero{background:var(--navy);border-radius:var(--r-card);padding:26px 22px;color:#fff;margin-bottom:18px;text-align:center}
@@ -888,7 +897,10 @@ function renderPlanTab() {
           return `<div class="day-card ${d?'comp':''}">
             <div class="dn ${d?'comp':''}">${tag.tag}</div>
             <div class="dc">
-              <div class="dt">${(Array.isArray(tag.aufgaben)?tag.aufgaben:(tag.aufgabe?[tag.aufgabe]:[])).map(a=>`• ${a}`).join('<br>')}</div>
+              <div class="task-list">${(Array.isArray(tag.aufgaben)?tag.aufgaben:(tag.aufgabe?[tag.aufgabe]:[])).map((a,i)=>{
+                const td=Array.isArray(ci.tasks)&&ci.tasks[i];
+                return `<div class="task-row ${td?'done':''}" onclick="event.stopPropagation();toggleTask(${tag.tag},${i})"><div class="task-cb">${td?'✓':''}</div><div class="task-text">${a}</div></div>`;
+              }).join('')}</div>
               <div class="dtp">${tag.tipp||''}</div>
             </div>
             ${d?'<div class="d-badge">✓</div>':''}
@@ -924,7 +936,13 @@ function renderHeuteTab() {
     if(task) break;
   }
   const aufgaben = Array.isArray(task?.aufgaben) ? task.aufgaben : (task?.aufgabe ? [task.aufgabe] : []);
-  document.getElementById('ht-task').innerHTML = aufgaben.length ? aufgaben.map(a=>`• ${a.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}`).join('<br>') : '—';
+  const ciNow = checkins[curDay]||{};
+  document.getElementById('ht-task').innerHTML = aufgaben.length
+    ? `<div class="task-list">${aufgaben.map((a,i)=>{
+        const td=Array.isArray(ciNow.tasks)&&ciNow.tasks[i];
+        return `<div class="task-row ${td?'done':''}" onclick="toggleTask(${curDay},${i})"><div class="task-cb">${td?'✓':''}</div><div class="task-text">${a}</div></div>`;
+      }).join('')}</div>`
+    : '—';
   document.getElementById('ht-tip').textContent = task?.tipp||'—';
 
   const ci = checkins[curDay]||{};
@@ -962,10 +980,23 @@ function saveNote() {
 function toggleDone() {
   if(!checkins[curDay]) checkins[curDay]={};
   checkins[curDay].done = !checkins[curDay].done;
+  checkins[curDay].tasks = [checkins[curDay].done, checkins[curDay].done, checkins[curDay].done];
   save();
   const bc = document.getElementById('btn-comp');
   if(checkins[curDay].done){bc.classList.add('done');bc.textContent='✓ Heute erledigt!';}
   else{bc.classList.remove('done');bc.textContent='✓ Aufgabe als erledigt markieren';}
+  renderHeuteTab();
+  renderPlanTab();
+}
+
+function toggleTask(day, idx) {
+  if(!checkins[day]) checkins[day]={};
+  if(!Array.isArray(checkins[day].tasks)) checkins[day].tasks=[false,false,false];
+  while(checkins[day].tasks.length<3) checkins[day].tasks.push(false);
+  checkins[day].tasks[idx] = !checkins[day].tasks[idx];
+  checkins[day].done = checkins[day].tasks.every(x=>x);
+  save();
+  if(day===curDay) renderHeuteTab();
   renderPlanTab();
 }
 
