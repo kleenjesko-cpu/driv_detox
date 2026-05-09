@@ -778,7 +778,7 @@ Erstelle einen strukturierten Plan im folgenden JSON-Format (NUR reines JSON, ke
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 6000,
+        max_tokens: 12000,
         system: 'Du bist ein Experte für digitales Wohlbefinden und Verhaltenspsychologie. Du erstellst präzise, umsetzbare und personalisierte 30-Tage Digital-Detox-Pläne auf Deutsch. Deine Pläne sind realistisch, motivierend und wissenschaftlich fundiert. Antworte ausschließlich im angegebenen JSON-Format ohne Markdown-Backticks oder Präambel.',
         messages: [{role:'user', content: prompt}],
       }),
